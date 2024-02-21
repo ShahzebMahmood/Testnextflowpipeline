@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Custom entrypoint script
+
+# Print a greeting
+echo "Custom entrypoint script is running!"
+
+# Print the command and arguments
+echo "Command: $0"
+echo "Arguments: $@"
+
+# Your custom logic here
+
+# Example: Run the command passed to the script
+exec "$@"
