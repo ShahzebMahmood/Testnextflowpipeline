@@ -1,27 +1,30 @@
-// Define the container with its tag
-container "public.ecr.aws/fluent-pipseeker/fluent-pipseeker:3.0.5"
+#!/usr/bin/env nextflow
 
-// Define container options with the specified entrypoint
-containerOptions '--entrypoint ""'
+process sayHello {
 
-// Define a simple process that runs a command in the container
-process testProcess {
-    // Input parameter (if any)
+    // Specify the container image
+    container "public.ecr.aws/fluent-pipseeker/fluent-pipseeker:3.0.5"
+
+    // Define input variable
     input:
-    // Command to be executed inside the container
+    val x
+
+    // Define output file
+    output:
+    stdout
+
+    // Specify the command to be executed inside the container
     script:
     """
-    # Command to test
-    echo "Hello from the container"
+    ./custom-entrypoint.sh echo '$x world!' > output.txt
     """
 
-    // Use the specified container and its options
-    container "public.ecr.aws/fluent-pipseeker/fluent-pipseeker:3.0.5"
-    containerOptions '--entrypoint ""'
+    // Specify the path to the custom entrypoint script
+    containerOptions "--entrypoint", "./custom-entrypoint.sh"
+
 }
 
-// Run the process
 workflow {
-    // Run the defined process
-    testProcess
+    // Create a channel with values
+    Channel.of('Bonjour', 'Ciao', 'Hello', 'Hola') | sayHello | view
 }
