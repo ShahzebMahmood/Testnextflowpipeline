@@ -1,30 +1,28 @@
 #!/usr/bin/env nextflow
+nextflow.enable.dsl=2 
 
 process sayHello {
-
-    // Specify the container image
-    container "public.ecr.aws/fluent-pipseeker/fluent-pipseeker:3.0.5"
-
-    // Define input variable
-    input:
+  label 'big_mem'
+  container = '128997144437.dkr.ecr.us-east-1.amazonaws.com/cs-testing:latest'
+  
+  input: 
     val x
-
-    // Define output file
-    output:
+  output:
     stdout
-
-    // Specify the command to be executed inside the container
-    script:
+  script:
     """
-    ./custom-entrypoint.sh echo '$x world!' > output.txt
+    whoami
+    ls -ld .
+    cat /etc/os-release
+    echo '$x world!'
     """
-
-    // Specify the path to the custom entrypoint script
-    containerOptions "--entrypoint", "./custom-entrypoint.sh"
-
 }
 
 workflow {
-    // Create a channel with values
-    Channel.of('Bonjour', 'Ciao', 'Hello', 'Hola') | sayHello | view
+  Channel.of('Hola') | sayHello | view
 }
+
+
+
+
+
